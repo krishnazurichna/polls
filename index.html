@@ -5,62 +5,62 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Super Bowl Poll</title>
 <style>
-   body {
-     font-family: Arial, sans-serif;
-     text-align: center;
-     background-image:url('./american-football-stadium-3d.webp');
-     background-size: cover;
-     background-position: center;
-     background-attachment: fixed;
-     margin: 0;
-     padding: 0;
-   }
-   h1 {
-     margin: 100px 0;
-     font-size: 4rem;
-   }
-   .team-container {
-     display: flex;
-     justify-content: center;
-     gap: 100px;
-     margin-top: 30px;
-   }
-   .team {
-     cursor: pointer;
-     text-align: center;
-   }
-   .team img {
-     width: 450px;
-     height: auto;
-     border: 10px solid transparent;
-     border-radius: 10px;
-     transition: transform 0.2s, border-color 0.2s;
-   }
-   .team img:hover {
-     transform: scale(1.1);
-     border-color: #0078D7;
-   }
-   .votess {
-     margin-top: 93px;
-     font-size: 2rem;
-     font-weight: bold;
-     color: #333;
-     text-shadow: 2px 10px 30px white;
-   }
-   .votes {
-     margin-top: 40px;
-     font-size: 2rem;
-     font-weight: bold;
-     color: #333;
-     text-shadow: 2px 10px 30px white;
-   }
-   .message{
-     margin-top:70px;
-     font-size: 1.5rem;
-     font-weight: normal;
-     color: #fff;
-     text-shadow: 2px 2px 4px #000;
-   }
+       body {
+           font-family: Arial, sans-serif;
+           text-align: center;
+           background-image: url('./american-football-stadium-3d.webp');
+           background-size: cover;
+           background-position: center;
+           background-attachment: fixed;
+           margin: 0;
+           padding: 0;
+       }
+       h1 {
+           margin: 100px 0;
+           font-size: 4rem;
+       }
+       .team-container {
+           display: flex; /* Flexbox layout */
+           justify-content: center; /* Center the items horizontally */
+           gap: 100px; /* Add space between the items */
+           margin-top: 30px;
+       }
+       .team {
+           cursor: pointer;
+           text-align: center;
+       }
+       .team img {
+           width: 450px;
+           height: auto;
+           border: 10px solid transparent;
+           border-radius: 10px;
+           transition: transform 0.2s, border-color 0.2s;
+       }
+       .team img:hover {
+           transform: scale(1.1);
+           border-color: #0078D7;
+       }
+       .votess {
+           margin-top: 93px;
+           font-size: 2rem;
+           font-weight: bold;
+           color: #333;
+           text-shadow: 2px 10px 30px white;
+       }
+       .votes {
+           margin-top: 40px;
+           font-size: 2rem;
+           font-weight: bold;
+           color: #333;
+           text-shadow: 2px 10px 10px white;
+       }
+       .message {
+           margin-top: 50px;
+           font-size: 1.5rem;
+           font-weight: normal;
+           color: #fff;
+           text-shadow: 2px 2px 4px #000;
+       }
 </style>
 </head>
 <body>
@@ -76,17 +76,27 @@
 </div>
 </div>
 <div class="message"> Click on a team and caste your vote!</div>
+
 <script>
-   // Initial vote counts
-   let votes = {
-     lions: 0,
-     chiefs: 0
-   };
-   // Voting function
-   function vote(team) {
-     votes[team]++;
-     document.getElementById(`${team}-votes`).innerText = votes[team];
-   }
+       // Initialize votes on page load
+       window.onload = function () {
+           let votes = JSON.parse(localStorage.getItem('votes')) || { chiefs: 0, lions: 0 };
+           document.getElementById('chiefs-votes').innerText = votes.chiefs;
+           document.getElementById('lions-votes').innerText = votes.lions;
+       };
+       // Voting function
+       function vote(team) {
+           let votes = JSON.parse(localStorage.getItem('votes')) || { chiefs: 0, lions: 0 };
+           votes[team]++;
+           document.getElementById(`${team}-votes`).innerText = votes[team];
+           localStorage.setItem('votes', JSON.stringify(votes));
+       }
+       // Clear votes function
+       function clearVotes() {
+           localStorage.removeItem('votes');
+           document.getElementById('chiefs-votes').innerText = 0;
+           document.getElementById('lions-votes').innerText = 0;
+       }
 </script>
 </body>
 </html>
