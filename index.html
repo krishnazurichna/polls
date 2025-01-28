@@ -70,9 +70,9 @@
 <img src="https://upload.wikimedia.org/wikipedia/en/e/e1/Kansas_City_Chiefs_logo.svg" alt="Chiefs Logo">
 <div class="votess">Chiefs Votes: <span id="chiefs-votes">0</span></div>
 </div>
-<div class="team" onclick="vote('lions')">
-<img src="https://upload.wikimedia.org/wikipedia/en/7/71/Detroit_Lions_logo.svg" alt="Lions Logo">
-<div class="votes">Lions Votes: <span id="lions-votes">0</span></div>
+<div class="team" onclick="vote('eagles')">
+<img src="https://upload.wikimedia.org/wikipedia/en/8/8e/Philadelphia_Eagles_logo.svg" alt="Eagles Logo">
+<div class="votes">Eagles Votes: <span id="eagles-votes">0</span></div>
 </div>
 </div>
 <div class="message"> Click on a team and caste your vote!</div>
@@ -80,13 +80,13 @@
 <script>
        // Initialize votes on page load
        window.onload = function () {
-           let votes = JSON.parse(localStorage.getItem('votes')) || { chiefs: 0, lions: 0 };
+           let votes = JSON.parse(localStorage.getItem('votes')) || { chiefs: 0, eagles: 0 };
            document.getElementById('chiefs-votes').innerText = votes.chiefs;
-           document.getElementById('lions-votes').innerText = votes.lions;
+           document.getElementById('eagles-votes').innerText = votes.eagles;
        };
        // Voting function
        function vote(team) {
-           let votes = JSON.parse(localStorage.getItem('votes')) || { chiefs: 0, lions: 0 };
+           let votes = JSON.parse(localStorage.getItem('votes')) || { chiefs: 0, eagles: 0 };
            votes[team]++;
            document.getElementById(`${team}-votes`).innerText = votes[team];
            localStorage.setItem('votes', JSON.stringify(votes));
@@ -95,7 +95,7 @@
        function clearVotes() {
            localStorage.removeItem('votes');
            document.getElementById('chiefs-votes').innerText = 0;
-           document.getElementById('lions-votes').innerText = 0;
+           document.getElementById('eagles-votes').innerText = 0;
        }
 </script>
 </body>
