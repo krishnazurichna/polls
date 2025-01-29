@@ -16,29 +16,34 @@
            padding: 0;
        }
        h1 {
-           margin: 100px 0;
+           margin-top: 50px;
            font-size: 4rem;
        }
        .nfl-logo {
-          margin-top: 20px;
-          margin-bottom: 20px;
-      }
+           margin-top: 20px;
+           margin-bottom: 20px;
+       }
        .nfl-logo img {
-          width: 200px;
-          height: auto;
-      }
+           width: 200px;
+           height: auto;
+       }
        .team-container {
-           display: flex; /* Flexbox layout */
-           justify-content: center; /* Center the items horizontally */
-           gap: 100px; /* Add space between the items */
+           display: flex;
+           justify-content: center;
+           gap: 100px;
            margin-top: 30px;
+       }
+       .team-wrapper {
+           display: flex;
+           align-items: center; /* Align items horizontally */
+           gap: 20px;
        }
        .team {
            cursor: pointer;
            text-align: center;
        }
        .team img {
-           width: 450px;
+           width: 300px;
            height: auto;
            border: 10px solid transparent;
            border-radius: 10px;
@@ -48,65 +53,106 @@
            transform: scale(1.1);
            border-color: #0078D7;
        }
-       .votess {
-           margin-top: 93px;
-           font-size: 2rem;
-           font-weight: bold;
-           color: #333;
-           text-shadow: 2px 10px 30px white;
-       }
        .votes {
-           margin-top: 70px;
-           font-size: 2rem;
+           margin-top: 10px;
+           font-size: 1.5rem;
            font-weight: bold;
-           color: #333;
-           text-shadow: 2px 10px 30px white;
+           color: #fff;
+           text-shadow: 2px 10px 10px black;
        }
        .message {
            margin-top: 50px;
-           font-size: 1.8rem;
+           font-size: 1.5rem;
            font-weight: normal;
            color: #fff;
            text-shadow: 2px 2px 4px #000;
+       }
+       /* Percentage Bar Styles */
+       .percentage-container {
+           width: 30px; /* Slim bar */
+           height: 200px;
+           background-color: #e0e0e0;
+           border-radius: 5px;
+           position: relative;
+           display: flex;
+           flex-direction: column;
+           align-items: center;
+       }
+       .percentage-bar {
+           width: 100%;
+           background-color: #4caf50;
+           position: absolute;
+           bottom: 0;
+           border-radius: 5px 5px 0 0;
+           transition: height 0.5s ease-in-out;
+       }
+       .percentage-text {
+           font-size: 1.2rem;
+           font-weight: bold;
+           margin-bottom: 5px;
+           color: #fff;
+           text-shadow: 2px 2px 4px black;
        }
 </style>
 </head>
 <body>
 <div class="nfl-logo">
 <img src="./bowl.png" alt="NFL Logo">
-</div>    
+</div>
 <h1>Who Wins the Super Bowl?</h1>
 <div class="team-container">
+<!-- Chiefs Section (Bar on Left) -->
+<div class="team-wrapper">
+<div class="percentage-container">
+<div class="percentage-text" id="chiefs-percentage">0%</div>
+<div id="chiefs-bar" class="percentage-bar" style="height: 0%;"></div>
+</div>
 <div class="team" onclick="vote('chiefs')">
 <img src="https://upload.wikimedia.org/wikipedia/en/e/e1/Kansas_City_Chiefs_logo.svg" alt="Chiefs Logo">
-<div class="votess">Chiefs Votes: <span id="chiefs-votes">0</span></div>
+<div class="votes">Chiefs Votes: <span id="chiefs-votes">0</span></div>
 </div>
+</div>
+<!-- Eagles Section (Bar on Right) -->
+<div class="team-wrapper">
 <div class="team" onclick="vote('eagles')">
 <img src="https://upload.wikimedia.org/wikipedia/en/8/8e/Philadelphia_Eagles_logo.svg" alt="Eagles Logo">
 <div class="votes">Eagles Votes: <span id="eagles-votes">0</span></div>
 </div>
+<div class="percentage-container">
+<div class="percentage-text" id="eagles-percentage">0%</div>
+<div id="eagles-bar" class="percentage-bar" style="height: 0%;"></div>
 </div>
-<div class="message"> Click on a team and caste your vote!</div>
-
+</div>
+</div>
+<div class="message"> Click on a team and cast your vote!</div>
 <script>
        // Initialize votes on page load
        window.onload = function () {
            let votes = JSON.parse(localStorage.getItem('votes')) || { chiefs: 0, eagles: 0 };
+           updateVotesAndBars(votes);
+       };
+       // Voting function with confirmation prompt
+       function vote(team) {
+           let teamName = team.charAt(0).toUpperCase() + team.slice(1); // Capitalize team name
+           let confirmVote = window.confirm(`Are you sure you want to vote for ${teamName}?`);
+           if (confirmVote) {
+               let votes = JSON.parse(localStorage.getItem('votes')) || { chiefs: 0, eagles: 0 };
+               votes[team]++;
+               localStorage.setItem('votes', JSON.stringify(votes));
+               updateVotesAndBars(votes);
+           }
+       }
+       // Function to update votes and percentage bars
+       function updateVotesAndBars(votes) {
+           let totalVotes = votes.chiefs + votes.eagles;
+           let chiefsPercentage = totalVotes ? (votes.chiefs / totalVotes) * 100 : 0;
+           let eaglesPercentage = totalVotes ? (votes.eagles / totalVotes) * 100 : 0;
            document.getElementById('chiefs-votes').innerText = votes.chiefs;
            document.getElementById('eagles-votes').innerText = votes.eagles;
-       };
-       // Voting function
-       function vote(team) {
-           let votes = JSON.parse(localStorage.getItem('votes')) || { chiefs: 0, eagles: 0 };
-           votes[team]++;
-           document.getElementById(`${team}-votes`).innerText = votes[team];
-           localStorage.setItem('votes', JSON.stringify(votes));
-       }
-       // Clear votes function
-       function clearVotes() {
-           localStorage.removeItem('votes');
-           document.getElementById('chiefs-votes').innerText = 0;
-           document.getElementById('eagles-votes').innerText = 0;
+           document.getElementById('chiefs-bar').style.height = `${chiefsPercentage}%`;
+           document.getElementById('eagles-bar').style.height = `${eaglesPercentage}%`;
+           document.getElementById('chiefs-percentage').innerText = `${chiefsPercentage.toFixed(1)}%`;
+           document.getElementById('eagles-percentage').innerText = `${eaglesPercentage.toFixed(1)}%`;
        }
 </script>
 </body>
