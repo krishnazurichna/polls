@@ -4,7 +4,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Super Bowl Poll</title>
-       <script src="<script src="https://cdn.jsdelivr.net/npm/@tsparticles/confetti@3.0.3/tsparticles.confetti.bundle.min.js"></script></script>
 <style>
        body {
            font-family: Arial, sans-serif;
@@ -102,13 +101,6 @@
            votes[team]++;
            document.getElementById(`${team}-votes`).innerText = votes[team];
            localStorage.setItem('votes', JSON.stringify(votes));
-           confetti({
-               particleCount: 200,
-               spread: 120,
-	        startVelocity: 40,
-	        gravity: 0.5,
-               origin: { y: 0.6 }
-           });
        }
        // Clear votes function
        function clearVotes() {
