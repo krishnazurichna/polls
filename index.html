@@ -35,7 +35,7 @@
        }
        .team-wrapper {
            display: flex;
-           align-items: center; /* Align items horizontally */
+           align-items: center;
            gap: 20px;
        }
        .team {
@@ -75,27 +75,32 @@
            border-radius: 5px;
            position: relative;
            display: flex;
-	   margin-right: 50px;
-	   margin-left: 50px;
+           margin-right: 50px;
+           margin-left: 50px;
            flex-direction: column;
            align-items: center;
        }
        .percentage-bar {
            width: 100%;
-           background-color: #4caf50;
            position: absolute;
            bottom: 0;
            border-radius: 5px 5px 0px 0;
            transition: height 0.5s ease-in-out;
        }
-      .percentage-text {
+       /* Team Colors for Percentage Bars */
+       #chiefs-bar {
+           background-color: #e31837; /* Chiefs Red */
+       }
+       #eagles-bar {
+           background-color: #004c54; /* Eagles Green */
+       }
+       .percentage-text {
            font-size: 1.2rem;
            font-weight: bold;
            margin-top: 20px;
            color: #fff;
            text-shadow: 2px 2px 4px black;
        }
-       
 </style>
 </head>
 <body>
@@ -127,7 +132,7 @@
 </div>
 </div>
 </div>
-<div class="message"> Click on a team and cast your vote!</div>
+<div class="message">Click on a team and cast your vote!</div>
 <script>
        // Initialize votes on page load
        window.onload = function () {
@@ -136,20 +141,23 @@
        };
        // Voting function with confirmation prompt
        function vote(team) {
-               let votes = JSON.parse(localStorage.getItem('votes')) || { chiefs: 0, eagles: 0 };
-               votes[team]++;
-               localStorage.setItem('votes', JSON.stringify(votes));
-               updateVotesAndBars(votes);
+           let votes = JSON.parse(localStorage.getItem('votes')) || { chiefs: 0, eagles: 0 };
+           votes[team]++;
+           localStorage.setItem('votes', JSON.stringify(votes));
+           updateVotesAndBars(votes);
        }
        // Function to update votes and percentage bars
        function updateVotesAndBars(votes) {
            let totalVotes = votes.chiefs + votes.eagles;
            let chiefsPercentage = totalVotes ? (votes.chiefs / totalVotes) * 100 : 0;
            let eaglesPercentage = totalVotes ? (votes.eagles / totalVotes) * 100 : 0;
+           // Update vote counts
            document.getElementById('chiefs-votes').innerText = votes.chiefs;
            document.getElementById('eagles-votes').innerText = votes.eagles;
+           // Update percentage bars
            document.getElementById('chiefs-bar').style.height = `${chiefsPercentage}%`;
            document.getElementById('eagles-bar').style.height = `${eaglesPercentage}%`;
+           // Update percentage text
            document.getElementById('chiefs-percentage').innerText = `${chiefsPercentage.toFixed(1)}%`;
            document.getElementById('eagles-percentage').innerText = `${eaglesPercentage.toFixed(1)}%`;
        }
