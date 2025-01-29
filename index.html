@@ -136,14 +136,10 @@
        };
        // Voting function with confirmation prompt
        function vote(team) {
-           let teamName = team.charAt(0).toUpperCase() + team.slice(1); // Capitalize team name
-           let confirmVote = window.confirm(`Are you sure you want to vote for ${teamName}?`);
-           if (confirmVote) {
                let votes = JSON.parse(localStorage.getItem('votes')) || { chiefs: 0, eagles: 0 };
                votes[team]++;
                localStorage.setItem('votes', JSON.stringify(votes));
                updateVotesAndBars(votes);
-           }
        }
        // Function to update votes and percentage bars
        function updateVotesAndBars(votes) {
