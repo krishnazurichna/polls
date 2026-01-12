@@ -28,51 +28,44 @@
     margin-top: 20px;
     margin-bottom: 20px;
   }
-
   .nfl-logo img {
     width: 200px;
     height: auto;
   }
 
-  /* Main container for both teams */
+  /* TWO-COLUMN LAYOUT */
   .team-container {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
+    display: flex;               /* two columns side-by-side */
+    justify-content: center;     /* center the pair */
+    align-items: flex-start;
     gap: 80px;
-    align-items: start;
-    justify-content: center;
     margin: 30px auto 0;
     max-width: 1200px;
     padding: 0 20px;
   }
 
-  /* Each side (wrapper) uses a 3-column grid: bar | logo | spacer (or reversed) */
+  /* Each team column = bar + logo box in a row */
   .team-wrapper {
-    display: grid;
-    grid-template-columns: 60px 1fr 60px;
+    display: flex;               /* bar and logo box in one row */
     align-items: center;
-    justify-items: center;
     gap: 20px;
-    /* Provide room so percentage text at top of bar doesn't overlap the logo */
-    padding-top: 10px;
-    padding-bottom: 10px;
+    /* add a little internal spacing so the top label doesn't overlap */
+    padding: 10px 0;
   }
 
-  /* For Bears block: bar on the left, spacer on the right */
-  .bears .bar-slot { grid-column: 1; }
-  .bears .logo-slot { grid-column: 2; }
-  .bears .spacer-slot { grid-column: 3; }
-
-  /* For Rams block: spacer on the left, logo center, bar on the right */
-  .rams .spacer-slot { grid-column: 1; }
-  .rams .logo-slot   { grid-column: 2; }
-  .rams .bar-slot    { grid-column: 3; }
+  /* Bears column: bar LEFT of logo */
+  .team-wrapper.bears {
+    flex-direction: row;         /* [bar] [logo] */
+  }
+  /* Rams column: bar RIGHT of logo */
+  .team-wrapper.rams {
+    flex-direction: row-reverse; /* [logo] [bar] */
+  }
 
   .team {
     cursor: pointer;
     text-align: center;
   }
-
   .team img {
     width: 300px;
     height: auto;
@@ -81,8 +74,8 @@
     transition: transform 0.2s, border-color 0.2s;
     background: rgba(255,255,255,.85);
     box-shadow: 0 6px 18px rgba(0,0,0,.25);
+    display: block;
   }
-
   .team img:hover {
     transform: scale(1.1);
     border-color: #0078D7;
@@ -97,9 +90,8 @@
   }
 
   .message {
-    margin-top: 40px;
+    margin-top: 30px;
     font-size: 1.3rem;
-    font-weight: normal;
     text-shadow: 2px 2px 4px #000;
     min-height: 1.5em;
   }
@@ -116,7 +108,6 @@
     align-items: center;
     box-shadow: inset 0 0 8px rgba(0,0,0,.2);
   }
-
   .percentage-text {
     font-size: 1.1rem;
     font-weight: 700;
@@ -125,7 +116,6 @@
     text-shadow: 2px 2px 4px black;
     z-index: 1;
   }
-
   .percentage-bar {
     width: 100%;
     position: absolute;
@@ -133,14 +123,13 @@
     border-radius: 5px 5px 0 0;
     transition: height 0.5s ease-in-out;
   }
-
   /* Team Colors for Percentage Bars */
   #bears-bar { background-color: #0B162A; } /* Bears Navy */
   #rams-bar  { background-color: #003594; } /* Rams Royal */
 
   @media (max-width: 900px) {
     .team-container {
-      grid-template-columns: 1fr; /* stack vertically on small screens */
+      flex-direction: column;  /* stack columns on small screens */
       gap: 40px;
     }
     .team img { width: 260px; }
@@ -149,52 +138,38 @@
 </head>
 <body>
   <div class="nfl-logo">
-    <img src="https://upload.wikimedia.org/wikipedia/en/a/a2/National_Football_League_logo.svg" alt="Who Wins the next game?</h1>
+    <img src="https://upload.wikimedia.org/wikipedia/en/a/a2/National_Football_League_logo.svg" alt1>Who Wins the next game?</h1>
 
+  <!-- EXACTLY TWO COLUMNS -->
   <div class="team-container">
-    <!-- Chicago Bears block (bar on LEFT of the logo) -->
+
+    <!-- Column 1: Chicago Bears (bar on LEFT, logo on RIGHT) -->
     <div class="team-wrapper bears">
-      <!-- bar slot -->
-      <div class="bar-slot">
-        <div class="percentage-container">
-          <div class="percentage-text" id="bears-percentage">0%</div>
-          <div id="bears-bar" class="percentage-bar" style="height: 0%;"></div>
-        </div>
+      <!-- LEFT: bar -->
+      <div class="percentage-container">
+        <div class="percentage-text" id="bears-percentage">0%</div>
+        <div id="bears-bar" class="percentage-bar" style="height: 0%;"></div>
       </div>
-
-      <!-- logo slot -->
-      <div class="logo-slot">
-        <div class="team" onclick="vote('bears')">
-          <img src="https://upload.wikimedia.org/wikipedia/en/1/15/Chicago_Bears_logo_primary.svg"
-               alt="Chicago Bearsotes: <span id="bears-votes">0</span></div>
-        </div>
+      <!-- RIGHT: logo + votes -->
+      <div class="team" onclick="vote('bears')">
+        <img src="https://upload.wikimedia.org/wikipedia/en/1/15/Chicago_Bears_logo_primary   <div class="votes">Chicago Bears Votes: <span id="bears-votes">0</span></div>
       </div>
-
-      <!-- spacer slot (keeps grid symmetric) -->
-      <div class="spacer-slot"></div>
     </div>
 
-    <!-- Los Angeles Rams block (bar on RIGHT of the logo) -->
+    <!-- Column 2: Los Angeles Rams (bar on RIGHT, logo on LEFT) -->
     <div class="team-wrapper rams">
-      <!-- spacer slot (keeps grid symmetric) -->
-      <div class="spacer-slot"></div>
-
-      <!-- logo slot -->
-      <div class="logo-slot">
-        <div class="team" onclick="vote('rams')">
-          <img src="https://upload.wikimedia.org/wikipedia/en/8/8a/Los_Angeles_Rams_logo.svg"
-               alt="Los Angeles Ramsotes: <span id="rams-votes">0</span></div>
-        </div>
+      <!-- RIGHT: bar (row-reverse puts bar to the right) -->
+      <div class="percentage-container">
+        <div class="percentage-text" id="rams-percentage">0%</div>
+        <div id="rams-bar" class="percentage-bar" style="height: 0%;"></div>
       </div>
-
-      <!-- bar slot -->
-      <div class="bar-slot">
-        <div class="percentage-container">
-          <div class="percentage-text" id="rams-percentage">0%</div>
-          <div id="rams-bar" class="percentage-bar" style="height: 0%;"></div>
-        </div>
+      <!-- LEFT: logo + votes -->
+      <div class="team" onclick="vote('rams')">
+        <img src="https://upload.wikimedia.org/wikipedia/en/8/8a/Los_Angeles_Rams_logo.svg"
+             alt="s Angeles Rams Votes: <span id="rams-votes">0</span></div>
       </div>
     </div>
+
   </div>
 
   <div class="message" id="message">Click on a team and cast your vote!</div>
