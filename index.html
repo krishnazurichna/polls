@@ -1,168 +1,181 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Super Bowl Poll</title>
-<style>
-       body {
-           font-family: Arial, sans-serif;
-           text-align: center;
-           background-image: url('./american-football-stadium-3d.webp');
-           background-size: cover;
-           background-position: center;
-           background-attachment: fixed;
-           margin: 0;
-           padding: 0;
-       }
-       h1 {
-           margin-top: 50px;
-           font-size: 4rem;
-       }
-       .nfl-logo {
-           margin-top: 20px;
-           margin-bottom: 20px;
-       }
-       .nfl-logo img {
-           width: 200px;
-           height: auto;
-       }
-       .team-container {
-           display: flex;
-           justify-content: center;
-           gap: 100px;
-           margin-top: 30px;
-       }
-       .team-wrapper {
-           display: flex;
-           align-items: center;
-           gap: 20px;
-       }
-       .team {
-           cursor: pointer;
-           text-align: center;
-       }
-       .team img {
-           width: 300px;
-           height: auto;
-           border: 10px solid transparent;
-           border-radius: 10px;
-           transition: transform 0.2s, border-color 0.2s;
-       }
-       .team img:hover {
-           transform: scale(1.1);
-           border-color: #0078D7;
-       }
-       .votes {
-           margin-top: 10px;
-           font-size: 1.5rem;
-           font-weight: bold;
-           color: #fff;
-           text-shadow: 0.1px 5px 5px black;
-       }
-       .message {
-           margin-top: 50px;
-           font-size: 1.5rem;
-           font-weight: normal;
-           color: #fff;
-           text-shadow: 2px 2px 4px #000;
-       }
-       .percentage-text {
-           font-size: 1.2rem;
-           font-weight: bold;
-           margin-top: 310px;
-           color: #fff;
-           text-shadow: 2px 2px 4px black;
-       }
-       /* Percentage Bar Styles */
-       .percentage-container {
-           width: 40px; /* Slim bar */
-           height: 300px;
-           background-color: ##f4f4f4;
-           border-radius: 5px;
-           position: relative;
-           display: flex;
-           margin-right: 50px;
-           margin-left: 50px;
-           flex-direction: column;
-           align-items: center;
-       }
-       .percentage-bar {
-           width: 100%;
-           position: absolute;
-           bottom: 0;
-           border-radius: 5px 5px 0px 0;
-           transition: height 0.5s ease-in-out;
-       }
-       /* Team Colors for Percentage Bars */
-       #chiefs-bar {
-           background-color: #e31837; /* Chiefs Red */
-       }
-       #eagles-bar {
-           background-color: #004c54; /* Eagles Green */
-       }
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>NFL Poll – Bears vs Rams</title>
+  <style>
+    /* Base page styles */
+    body {
+      font-family: Arial, sans-serif;
+      background-image: url('./american-football-stadium-3d.webp');
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
+      margin: 0;
+      padding: 0;
+      color: #111;
+      text-align: center;
+    }
+
+    h1 {
+      margin: 60px 0 30px;
+      font-size: 3rem;
+      color: #fff;
+      text-shadow: 0 2px 6px rgba(0,0,0,.6);
+    }
+
+    /* Layout */
+    .team-container {
+      display: flex;
+      gap: 60px;
+      justify-content: center;
+      align-items: flex-start;
+      flex-wrap: wrap;
+      margin: 20px auto 0;
+      max-width: 1200px;
+      padding: 0 20px;
+    }
+
+    .team {
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .team img {
+      width: 320px;
+      height: auto;
+      border: 8px solid transparent;
+      border-radius: 12px;
+      background: rgba(255,255,255,.9);
+      box-shadow: 0 6px 18px rgba(0,0,0,.25);
+      transition: transform .2s ease, border-color .2s ease, box-shadow .2s ease;
+    }
+
+    .team img:hover {
+      transform: scale(1.08);
+      border-color: #0078D7;
+      box-shadow: 0 10px 24px rgba(0,0,0,.35);
+    }
+
+    .votes {
+      margin-top: 16px;
+      font-size: 1.6rem;
+      font-weight: bold;
+      color: #fff;
+      text-shadow: 2px 2px 4px rgba(0,0,0,.6);
+    }
+
+    .message {
+      margin-top: 30px;
+      font-size: 1.2rem;
+      font-weight: normal;
+      color: #fff;
+      text-shadow: 0 2px 6px rgba(0,0,0,.6);
+      min-height: 1.5em; /* reserve space to avoid layout shift */
+    }
+
+    .hint {
+      margin: 40px 0 60px;
+      font-size: .95rem;
+      color: #eee;
+      text-shadow: 0 2px 6px rgba(0,0,0,.6);
+    }
+
+    @media (max-width: 640px) {
+      .team img { width: 260px; }
+      h1 { font-size: 2.2rem; }
+    }
+  </style>
 </head>
 <body>
-<div class="nfl-logo">
-<img src="./nfl-logo.png" alt="NFL Logo">
-</div>
-<h1>Who Wins the Super Bowl?</h1>
-<div class="team-container">
-<!-- Chiefs Section (Bar on Left) -->
-<div class="team-wrapper">
-<div class="percentage-container">
-<div class="percentage-text" id="chiefs-percentage">0%</div>
-<div id="chiefs-bar" class="percentage-bar" style="height: 0%;"></div>
-</div>
-<div class="team" onclick="vote('chiefs')">
-<img src="https://upload.wikimedia.org/wikipedia/en/1/15/Chicago_Bears_logo_primary.svg" alt="Chiefs Logo">
-<div class="votes">Chicago Bears Votes: <span id="chiefs-votes">0</span></div>
-</div>
-</div>
-<!-- Eagles Section (Bar on Right) -->
-<div class="team-wrapper">
-<div class="team" onclick="vote('eagles')">
-<img src="https://upload.wikimedia.org/wikipedia/en/8/8a/Los_Angeles_Rams_logo.svg" alt="Eagles Logo">
-<div class="votes">Los Angeles Rams Votes: <span id="eagles-votes">0</span></div>
-</div>
-<div class="percentage-container">
-<div class="percentage-text" id="eagles-percentage">0%</div>
-<div id="eagles-bar" class="percentage-bar" style="height: 0%;"></div>
-</div>
-</div>
-</div>
-<div class="message">Click on a team and cast your vote!</div>
-<script>
-       // Initialize votes on page load
-       window.onload = function () {
-           let votes = JSON.parse(localStorage.getItem('votes')) || { chiefs: 0, eagles: 0 };
-           updateVotesAndBars(votes);
-       };
-       // Voting function with confirmation prompt
-       function vote(team) {
-           let votes = JSON.parse(localStorage.getItem('votes')) || { chiefs: 0, eagles: 0 };
-           votes[team]++;
-           localStorage.setItem('votes', JSON.stringify(votes));
-           updateVotesAndBars(votes);
-       }
-       // Function to update votes and percentage bars
-       function updateVotesAndBars(votes) {
-           let totalVotes = votes.chiefs + votes.eagles;
-           let chiefsPercentage = totalVotes ? (votes.chiefs / totalVotes) * 100 : 0;
-           let eaglesPercentage = totalVotes ? (votes.eagles / totalVotes) * 100 : 0;
-           // Update vote counts
-           document.getElementById('chiefs-votes').innerText = votes.chiefs;
-           document.getElementById('eagles-votes').innerText = votes.eagles;
-           // Update percentage bars
-           document.getElementById('chiefs-bar').style.height = `${chiefsPercentage}%`;
-           document.getElementById('eagles-bar').style.height = `${eaglesPercentage}%`;
-           // Update percentage text
-           document.getElementById('chiefs-percentage').innerText = `${chiefsPercentage.toFixed(1)}%`;
-           document.getElementById('eagles-percentage').innerText = `${eaglesPercentage.toFixed(1)}%`;
-       }
-</script>
+  <h1>Who Wins? Chicago Bears or Los Angeles Rams?</h1>
+
+  <div class="team-container">
+    <!-- Chicago Bears -->
+    <div class="team" onclick="vote('bears')">
+      https://upload.wikimedia.org/wikipedia/en/1/15/Chicago_Bears_logo_primary.svg
+      <div class="votes">
+        Bears Votes: <span id="bears-votes">0</span>
+      </div>
+    </div>
+
+    <!-- Los Angeles Rams -->
+    <div class="team" onclick="vote('rams')">
+      <img
+        src="https://upload.wikimedia.org/wikipedia/en/8/8a/Los_Angeles_Rams_logo.svg"
+        alt="Los Angeles Rams Logo"
+        loading="lazy"
+     </div>
+    </div>
+  </div>
+
+  <div class="message" id="message"></div>
+  <div class="hint">Tip: Votes are stored in your browser. Use a backend if you want global totals across users.</div>
+
+  <script>
+    // --- Simple client-side vote storage (per browser) ---
+    const STORAGE_KEY = 'nflVotes_bears_rams';
+    const defaultVotes = { bears: 0, rams: 0 };
+
+    // Load votes from localStorage or initialize
+    function loadVotes() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        return raw ? JSON.parse(raw) : { ...defaultVotes };
+      } catch {
+        return { ...defaultVotes };
+      }
+    }
+
+    function saveVotes(v) {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(v));
+      } catch {
+        // ignore storage errors
+      }
+    }
+
+    // Update the numbers shown on screen
+    function renderVotes(v) {
+      const bearsEl = document.getElementById('bears-votes');
+      const ramsEl  = document.getElementById('rams-votes');
+      if (bearsEl) bearsEl.textContent = v.bears;
+      if (ramsEl)  ramsEl.textContent  = v.rams;
+    }
+
+    // Show a user-friendly message
+    function showMessage(text) {
+      const msg = document.getElementById('message');
+      if (msg) msg.textContent = text;
+    }
+
+    // Handle click on a team
+    function vote(team) {
+      const votes = loadVotes();
+      if (!(team in votes)) {
+        showMessage('Unknown team.');
+        return;
+      }
+      votes[team] += 1;
+      saveVotes(votes);
+      renderVotes(votes);
+
+      const teamNice =
+        team === 'bears' ? 'the Chicago Bears' :
+        team === 'rams'  ? 'the Los Angeles Rams' :
+        team;
+
+      showMessage(`Thanks! Your vote for ${teamNice} has been counted.`);
+    }
+
+    // Initialize UI on load
+    document.addEventListener('DOMContentLoaded', () => {
+      renderVotes(loadVotes());
+    });
+  </script>
 </body>
 </html>
-
-
