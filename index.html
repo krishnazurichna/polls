@@ -6,7 +6,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>NFL Poll – Bears vs Rams</title>
   <style>
-    /* Base page styles */
     body {
       font-family: Arial, sans-serif;
       background-image: url('./american-football-stadium-3d.webp');
@@ -18,15 +17,12 @@
       color: #111;
       text-align: center;
     }
-
     h1 {
       margin: 60px 0 30px;
       font-size: 3rem;
       color: #fff;
       text-shadow: 0 2px 6px rgba(0,0,0,.6);
     }
-
-    /* Layout */
     .team-container {
       display: flex;
       gap: 60px;
@@ -37,14 +33,12 @@
       max-width: 1200px;
       padding: 0 20px;
     }
-
     .team {
       cursor: pointer;
       display: flex;
       flex-direction: column;
       align-items: center;
     }
-
     .team img {
       width: 320px;
       height: auto;
@@ -54,13 +48,11 @@
       box-shadow: 0 6px 18px rgba(0,0,0,.25);
       transition: transform .2s ease, border-color .2s ease, box-shadow .2s ease;
     }
-
     .team img:hover {
       transform: scale(1.08);
       border-color: #0078D7;
       box-shadow: 0 10px 24px rgba(0,0,0,.35);
     }
-
     .votes {
       margin-top: 16px;
       font-size: 1.6rem;
@@ -68,23 +60,33 @@
       color: #fff;
       text-shadow: 2px 2px 4px rgba(0,0,0,.6);
     }
-
     .message {
       margin-top: 30px;
       font-size: 1.2rem;
       font-weight: normal;
       color: #fff;
       text-shadow: 0 2px 6px rgba(0,0,0,.6);
-      min-height: 1.5em; /* reserve space to avoid layout shift */
+      min-height: 1.5em;
     }
-
+    .controls {
+      margin: 24px 0 60px;
+    }
+    .btn {
+      background: rgba(255,255,255,.9);
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      padding: 10px 16px;
+      margin: 0 8px;
+      cursor: pointer;
+      font-weight: 600;
+    }
+    .btn:hover { background: #fff; }
     .hint {
-      margin: 40px 0 60px;
+      margin: 10px 0 60px;
       font-size: .95rem;
       color: #eee;
       text-shadow: 0 2px 6px rgba(0,0,0,.6);
     }
-
     @media (max-width: 640px) {
       .team img { width: 260px; }
       h1 { font-size: 2.2rem; }
@@ -105,41 +107,83 @@
 
     <!-- Los Angeles Rams -->
     <div class="team" onclick="vote('rams')">
-      <img
-        src="https://upload.wikimedia.org/wikipedia/en/8/8a/Los_Angeles_Rams_logo.svg"
-        alt="Los Angeles Rams Logo"
-        loading="lazy"
-     </div>
+      https://upload.wikimedia.org/wikipedia/en/8/8a/Los_Angeles_Rams_logo.svg
+      <div class="votes">
+        Rams Votes: <span id="rams-votes">0</span>
+      </div>
     </div>
   </div>
 
   <div class="message" id="message"></div>
-  <div class="hint">Tip: Votes are stored in your browser. Use a backend if you want global totals across users.</div>
+
+  <div class="controls">
+    <button class="btn" onclick="resetVotes()">Reset votes (for testing)</button>
+  </div>
+  <div class="hint">Votes are stored in your browser. If storage is blocked, the app falls back to in‑memory counts.</div>
 
   <script>
-    // --- Simple client-side vote storage (per browser) ---
-    const STORAGE_KEY = 'nflVotes_bears_rams';
+    // ---------- Storage helpers with diagnostics ----------
+    const STORAGE_KEY = 'nflVotes_bears_rams_v1';
     const defaultVotes = { bears: 0, rams: 0 };
 
-    // Load votes from localStorage or initialize
+    function storageAvailable(type = 'localStorage') {
+      try {
+        const storage = window[type];
+        const x = '__storage_test__';
+        storage.setItem(x, x);
+        storage.removeItem(x);
+        return true;
+      } catch (e) {
+        console.warn('[Poll] Storage not available:', e?.message || e);
+        return false;
+      }
+    }
+
+    const canUseLocal = storageAvailable('localStorage');
+
+    // Fallback in-memory store if localStorage is unavailable
+    let memoryStore = { ...defaultVotes };
+
     function loadVotes() {
+      if (!canUseLocal) {
+        console.info('[Poll] Using in-memory store (no localStorage).');
+        return { ...memoryStore };
+      }
       try {
         const raw = localStorage.getItem(STORAGE_KEY);
-        return raw ? JSON.parse(raw) : { ...defaultVotes };
-      } catch {
+        if (!raw) {
+          console.info('[Poll] No stored votes yet, using defaults.');
+          return { ...defaultVotes };
+        }
+        const parsed = JSON.parse(raw);
+        // Basic shape validation
+        if (typeof parsed !== 'object' || parsed === null ||
+            !('bears' in parsed) || !('rams' in parsed)) {
+          console.warn('[Poll] Stored value malformed, resetting.');
+          return { ...defaultVotes };
+        }
+        return parsed;
+      } catch (err) {
+        console.error('[Poll] Failed to read/parse storage:', err);
         return { ...defaultVotes };
       }
     }
 
     function saveVotes(v) {
+      if (!canUseLocal) {
+        memoryStore = { ...v };
+        console.info('[Poll] (Memory) Votes saved:', memoryStore);
+        return;
+      }
       try {
         localStorage.setItem(STORAGE_KEY, JSON.stringify(v));
-      } catch {
-        // ignore storage errors
+        console.info('[Poll] (localStorage) Votes saved:', v);
+      } catch (err) {
+        console.error('[Poll] Failed to save votes:', err);
       }
     }
 
-    // Update the numbers shown on screen
+    // ---------- UI ----------
     function renderVotes(v) {
       const bearsEl = document.getElementById('bears-votes');
       const ramsEl  = document.getElementById('rams-votes');
@@ -147,13 +191,12 @@
       if (ramsEl)  ramsEl.textContent  = v.rams;
     }
 
-    // Show a user-friendly message
     function showMessage(text) {
       const msg = document.getElementById('message');
       if (msg) msg.textContent = text;
     }
 
-    // Handle click on a team
+    // ---------- Actions ----------
     function vote(team) {
       const votes = loadVotes();
       if (!(team in votes)) {
@@ -164,17 +207,22 @@
       saveVotes(votes);
       renderVotes(votes);
 
-      const teamNice =
-        team === 'bears' ? 'the Chicago Bears' :
-        team === 'rams'  ? 'the Los Angeles Rams' :
-        team;
-
+      const teamNice = team === 'bears' ? 'the Chicago Bears' : 'the Los Angeles Rams';
       showMessage(`Thanks! Your vote for ${teamNice} has been counted.`);
     }
 
-    // Initialize UI on load
+    function resetVotes() {
+      const fresh = { ...defaultVotes };
+      saveVotes(fresh);
+      renderVotes(fresh);
+      showMessage('Votes reset. Click a logo to test again.');
+    }
+
+    // ---------- Init ----------
     document.addEventListener('DOMContentLoaded', () => {
-      renderVotes(loadVotes());
+      const current = loadVotes();
+      renderVotes(current);
+      console.info('[Poll] Initial votes:', current);
     });
   </script>
 </body>
