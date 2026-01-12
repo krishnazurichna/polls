@@ -40,8 +40,8 @@
       align-items: center;
     }
     .team img {
-      width: 320px;
-      height: auto;
+      height: 180px;       /* unified visual size */
+      width: auto;
       border: 8px solid transparent;
       border-radius: 12px;
       background: rgba(255,255,255,.9);
@@ -88,7 +88,7 @@
       text-shadow: 0 2px 6px rgba(0,0,0,.6);
     }
     @media (max-width: 640px) {
-      .team img { width: 260px; }
+      .team img { height: 150px; }
       h1 { font-size: 2.2rem; }
     }
   </style>
@@ -96,20 +96,23 @@
 <body>
   <h1>Who Wins? Chicago Bears or Los Angeles Rams?</h1>
 
+  <!-- IMPORTANT: no stray text/URLs between the heading and team-container -->
+
   <div class="team-container">
     <!-- Chicago Bears -->
     <div class="team" onclick="vote('bears')">
-      https://upload.wikimedia.org/wikipedia/en/1/15/Chicago_Bears_logo_primary.svg
-      <div class="votes">
-        Bears Votes: <span id="bears-votes">0</span>
+      <img
+        src="https://upload.wikimedia.org/wikipedia/en/1/15/Chicago_Bears_logo_primary.svg"
+               Bears Votes: <span id="bears-votes">0</span>
       </div>
     </div>
 
     <!-- Los Angeles Rams -->
     <div class="team" onclick="vote('rams')">
-      https://upload.wikimedia.org/wikipedia/en/8/8a/Los_Angeles_Rams_logo.svg
-      <div class="votes">
-        Rams Votes: <span id="rams-votes">0</span>
+      <img
+        src="https://upload.wikimedia.org/wikipedia/en/8/8a/Los_Angeles_Rams_logo.svg"
+        alt="Los Angeles Rams Logo"
+       otes">0</span>
       </div>
     </div>
   </div>
@@ -119,7 +122,9 @@
   <div class="controls">
     <button class="btn" onclick="resetVotes()">Reset votes (for testing)</button>
   </div>
-  <div class="hint">Votes are stored in your browser. If storage is blocked, the app falls back to in‑memory counts.</div>
+  <div class="hint">
+    Votes are stored in your browser; if storage is blocked, the app falls back to in‑memory counts.
+  </div>
 
   <script>
     // ---------- Storage helpers with diagnostics ----------
@@ -140,8 +145,6 @@
     }
 
     const canUseLocal = storageAvailable('localStorage');
-
-    // Fallback in-memory store if localStorage is unavailable
     let memoryStore = { ...defaultVotes };
 
     function loadVotes() {
@@ -156,7 +159,6 @@
           return { ...defaultVotes };
         }
         const parsed = JSON.parse(raw);
-        // Basic shape validation
         if (typeof parsed !== 'object' || parsed === null ||
             !('bears' in parsed) || !('rams' in parsed)) {
           console.warn('[Poll] Stored value malformed, resetting.');
