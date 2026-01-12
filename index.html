@@ -5,195 +5,193 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Super Bowl Poll</title>
 <style>
-    body {
-        font-family: Arial, sans-serif;
-        text-align: center;
-        background-image: url('./american-football-stadium-3d.webp');
-        background-size: cover;
-        background-position: center;
-        background-attachment: fixed;
-        margin: 0;
-        padding: 0;
-    }
-    h1 {
-        margin-top: 50px;
-        font-size: 4rem;
-        color: #fff;
-        text-shadow: 0 2px 6px rgba(0,0,0,.6);
-    }
-    .nfl-logo {
-        margin-top: 20px;
-        margin-bottom: 20px;
-    }
-    .nfl-logo img {
-        width: 200px;
-        height: auto;
-    }
-    .team-container {
-        display: flex;
-        justify-content: center;
-        gap: 100px;
-        margin-top: 30px;
-    }
-    .team-wrapper {
-        display: flex;
-        align-items: center;
-        gap: 20px;
-    }
-    .team {
-        cursor: pointer;
-        text-align: center;
-    }
-    .team img {
-        width: 300px;
-        height: auto;
-        border: 10px solid transparent;
-        border-radius: 10px;
-        transition: transform 0.2s, border-color 0.2s;
-    }
-    .team img:hover {
-        transform: scale(1.1);
-        border-color: #0078D7;
-    }
-    .votes {
-        margin-top: 10px;
-        font-size: 1.5rem;
-        font-weight: bold;
-        color: #fff;
-        text-shadow: 0.1px 5px 5px black;
-    }
-    .message {
-        margin-top: 50px;
-        font-size: 1.5rem;
-        font-weight: normal;
-        color: #fff;
-        text-shadow: 2px 2px 4px #000;
-    }
-    .percentage-text {
-        font-size: 1.2rem;
-        font-weight: bold;
-        margin-top: 310px;
-        color: #fff;
-        text-shadow: 2px 2px 4px black;
-    }
- 
-    /* Percentage Bar Styles */
-    .percentage-container {
-        width: 40px; /* Slim bar */
-        height: 300px;
-        background-color: #f4f4f4; /* fixed: single # */
-        border-radius: 5px;
-        position: relative;
-        display: flex;
-        margin-right: 50px;
-        margin-left: 50px;
-        flex-direction: column;
-        align-items: center;
-    }
-    .percentage-bar {
-        width: 100%;
-        position: absolute;
-        bottom: 0;
-        border-radius: 5px 5px 0 0;
-        transition: height 0.5s ease-in-out;
-    }
- 
-    /* Team Colors for Percentage Bars */
-    #bears-bar {
-        background-color: #0B162A; /* Bears Navy */
-    }
-    #rams-bar {
-        background-color: #003594; /* Rams Royal */
-    }
+   body {
+     font-family: Arial, sans-serif;
+     text-align: center;
+     background-image: url('./american-football-stadium-3d.webp');
+     background-size: cover;
+     background-position: center;
+     background-attachment: fixed;
+     margin: 0;
+     padding: 0;
+   }
+   h1 {
+     margin-top: 50px;
+     font-size: 4rem;
+     color: #fff;
+     text-shadow: 0 2px 6px rgba(0,0,0,.6);
+   }
+   .nfl-logo {
+     margin-top: 20px;
+     margin-bottom: 20px;
+   }
+   .nfl-logo img {
+     width: 200px;
+   }
+   /* =========================
+      TEAM LAYOUT
+   ========================= */
+   .team-container {
+     display: flex;
+     justify-content: center;
+     align-items: flex-end;
+     gap: 150px;
+     margin-top: 40px;
+   }
+   .team-column {
+     display: flex;
+     align-items: flex-end;
+     gap: 30px;
+   }
+   .team {
+     cursor: pointer;
+     text-align: center;
+   }
+   .team img {
+     width: 300px;
+     border: 10px solid transparent;
+     border-radius: 10px;
+     transition: transform 0.2s, border-color 0.2s;
+   }
+   .team img:hover {
+     transform: scale(1.1);
+     border-color: #0078D7;
+   }
+   .votes {
+     margin-top: 10px;
+     font-size: 1.5rem;
+     font-weight: bold;
+     color: #fff;
+     text-shadow: 0 2px 5px #000;
+   }
+   /* =========================
+      PERCENTAGE BARS
+   ========================= */
+   .percentage-container {
+     width: 40px;
+     height: 300px;
+     background-color: #f4f4f4;
+     border-radius: 5px;
+     position: relative;
+     display: flex;
+     justify-content: flex-end;
+     align-items: center;
+     flex-direction: column;
+   }
+   .percentage-bar {
+     width: 100%;
+     position: absolute;
+     bottom: 0;
+     border-radius: 5px 5px 0 0;
+     transition: height 0.5s ease-in-out;
+   }
+   .percentage-text {
+     font-size: 1.2rem;
+     font-weight: bold;
+     color: #fff;
+     text-shadow: 2px 2px 4px #000;
+     margin-bottom: 5px;
+     z-index: 1;
+   }
+   #bears-bar {
+     background-color: #0B162A;
+   }
+   #rams-bar {
+     background-color: #003594;
+   }
+   .message {
+     margin-top: 50px;
+     font-size: 1.5rem;
+     color: #fff;
+     text-shadow: 2px 2px 4px #000;
+   }
 </style>
 </head>
 <body>
 <div class="nfl-logo">
-<img src="https://upload.wikimedia.org/wikipedia/en/a/a2/National_Football_League_logo.svg">
+<img src="https://upload.wikimedia.org/wikipedia/en/a/a2/National_Football_League_logo.svg" alt="NFL Logo">
 </div>
- 
-<h1>Who Wins the next game?</h1>
- 
+<h1>Who Wins the Next Game?</h1>
 <div class="team-container">
-<!-- Chicago Bears Section (bar on left) -->
-<div class="team-wrapper">
+<!-- Chicago Bears -->
+<div class="team-column">
 <div class="percentage-container">
 <div class="percentage-text" id="bears-percentage">0%</div>
 <div id="bears-bar" class="percentage-bar" style="height: 0%;"></div>
 </div>
 <div class="team" onclick="vote('bears')">
-<img src="https://upload.wikimedia.org/wikipedia/en/1/15/Chicago_Bears_logo_primary.svg" class="votes">Chicago Bears Votes: <span id="bears-votes">0</span></div>
+<img src="https://upload.wikimedia.org/wikipedia/en/1/15/Chicago_Bears_logo_primary.svg" alt="Chicago Bears">
+<div class="votes">
+         Chicago Bears Votes: <span id="bears-votes">0</span>
 </div>
 </div>
- 
-  <!-- Los Angeles Rams Section (bar on right) -->
-<div class="team-wrapper">
-<div class="team" onclick="vote('rams')">
-<img src="https://upload.wikimedia.org/wikipedia/en/8/8a/Los_Angeles_Rams_logo.svg" altss="votes">Los Angeles Rams Votes: <span id="rams-votes">0</span></div>
 </div>
+<!-- Los Angeles Rams -->
+<div class="team-column">
 <div class="percentage-container">
 <div class="percentage-text" id="rams-percentage">0%</div>
 <div id="rams-bar" class="percentage-bar" style="height: 0%;"></div>
 </div>
+<div class="team" onclick="vote('rams')">
+<img src="https://upload.wikimedia.org/wikipedia/en/8/8a/Los_Angeles_Rams_logo.svg" alt="Los Angeles Rams">
+<div class="votes">
+         Los Angeles Rams Votes: <span id="rams-votes">0</span>
 </div>
 </div>
- 
-<div class="message" id="message">Click on a team and cast your vote!</div>
- 
+</div>
+</div>
+<div class="message" id="message">
+   Click on a team and cast your vote!
+</div>
 <script>
-  // Use a unique storage key so last year's data doesn't collide
-  const STORAGE_KEY = 'votes_bears_rams_2026';
- 
-  // Initialize votes on page load
-  window.onload = function () {
-    const votes = loadVotes();
-    updateVotesAndBars(votes);
-  };
- 
-  function loadVotes() {
-    try {
-      const raw = localStorage.getItem(STORAGE_KEY);
-      return raw ? JSON.parse(raw) : { bears: 0, rams: 0 };
-    } catch {
-      // Fallback if storage is blocked or malformed
-      return { bears: 0, rams: 0 };
-    }
-  }
- 
-  // Voting function
-  function vote(team) {
-    const votes = loadVotes();
-    if (!(team in votes)) return;
-    votes[team]++;
-    try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(votes));
-    } catch (err) {
-      console.warn('Failed to save votes:', err);
-    }
-    updateVotesAndBars(votes);
-    const msg = team === 'bears' ? 'the Chicago Bears' : 'the Los Angeles Rams';
-    document.getElementById('message').textContent =
-      `Thanks! Your vote for ${msg} has been counted.`;
-  }
- 
-  // Function to update votes and percentage bars
-  function updateVotesAndBars(votes) {
-    const totalVotes = votes.bears + votes.rams;
-    const bearsPercentage = totalVotes ? (votes.bears / totalVotes) * 100 : 0;
-    const ramsPercentage  = totalVotes ? (votes.rams  / totalVotes) * 100 : 0;
- 
-    // Update vote counts
-    document.getElementById('bears-votes').innerText = votes.bears;
-    document.getElementById('rams-votes').innerText  = votes.rams;
- 
-    // Update percentage bars
-    document.getElementById('bears-bar').style.height = `${bearsPercentage}%`;
-    document.getElementById('rams-bar').style.height  = `${ramsPercentage}%`;
- 
-    // Update percentage text
-    document.getElementById('bears-percentage').innerText = `${bearsPercentage.toFixed(1)}%`;
-    document.getElementById('rams-percentage').innerText  = `${ramsPercentage.toFixed(1)}%`;
-  }
+   const STORAGE_KEY = 'votes_bears_rams_2026';
+   window.onload = function () {
+     const votes = loadVotes();
+     updateVotesAndBars(votes);
+   };
+   function loadVotes() {
+     try {
+       const raw = localStorage.getItem(STORAGE_KEY);
+       return raw ? JSON.parse(raw) : { bears: 0, rams: 0 };
+     } catch {
+       return { bears: 0, rams: 0 };
+     }
+   }
+   function vote(team) {
+     const votes = loadVotes();
+     if (!(team in votes)) return;
+     votes[team]++;
+     try {
+       localStorage.setItem(STORAGE_KEY, JSON.stringify(votes));
+     } catch (err) {
+       console.warn('Failed to save votes:', err);
+     }
+     updateVotesAndBars(votes);
+     const msg = team === 'bears'
+       ? 'the Chicago Bears'
+       : 'the Los Angeles Rams';
+     document.getElementById('message').textContent =
+       `Thanks! Your vote for ${msg} has been counted.`;
+   }
+   function updateVotesAndBars(votes) {
+     const totalVotes = votes.bears + votes.rams;
+     const bearsPercentage = totalVotes
+       ? (votes.bears / totalVotes) * 100
+       : 0;
+     const ramsPercentage = totalVotes
+       ? (votes.rams / totalVotes) * 100
+       : 0;
+     document.getElementById('bears-votes').innerText = votes.bears;
+     document.getElementById('rams-votes').innerText = votes.rams;
+     document.getElementById('bears-bar').style.height =
+       `${bearsPercentage}%`;
+     document.getElementById('rams-bar').style.height =
+       `${ramsPercentage}%`;
+     document.getElementById('bears-percentage').innerText =
+       `${bearsPercentage.toFixed(1)}%`;
+     document.getElementById('rams-percentage').innerText =
+       `${ramsPercentage.toFixed(1)}%`;
+   }
 </script>
 </body>
 </html>
